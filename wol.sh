@@ -40,7 +40,7 @@ readonly CROSS_MARK="${RED}✖${RESET}"
 # Help Function
 # ------------------------------------------------------------------------------
 show_help() {
-    cat << EOF
+    printf '%b\n' "
 ${BOLD}Wake-on-LAN (WoL)${RESET} - Send magic packet to wake a network device
 
 ${BOLD}Usage:${RESET} ${SCRIPT_NAME} [-h|--help] [-p|--port PORT] MAC_ADDRESS IP_ADDRESS
@@ -63,8 +63,7 @@ ${BOLD}Examples:${RESET}
 
   ${DIM}# Using long option format${RESET}
   ${SCRIPT_NAME} --port 9 AABBCCDDEEFF 10.0.0.50
-
-EOF
+"
 }
 
 # ------------------------------------------------------------------------------
