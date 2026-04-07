@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
-import { loadHosts, saveHosts, validateHost } from './hosts';
+import { loadHosts, saveHosts } from './hosts';
+import { validateHost } from './validation';
 import { sendMagicPacket } from './wol';
 import { Host, WolResult } from '../shared/types';
 

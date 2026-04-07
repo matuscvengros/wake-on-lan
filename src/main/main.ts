@@ -26,7 +26,7 @@ function createWindow(): void {
 app.whenReady().then(() => {
   registerIpcHandlers();
   createWindow();
-  checkForUpdates();
+  setTimeout(() => checkForUpdates().catch(() => {}), 3000);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

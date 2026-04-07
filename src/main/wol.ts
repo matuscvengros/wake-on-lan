@@ -8,7 +8,7 @@ export interface WolTarget {
   useDirectIp: boolean;
 }
 
-function parseMac(mac: string): Buffer {
+export function parseMac(mac: string): Buffer {
   const bytes = mac.split(':').map(hex => parseInt(hex, 16));
   if (bytes.length !== 6 || bytes.some(b => isNaN(b) || b < 0 || b > 0xff)) {
     throw new Error(`Invalid MAC address: ${mac}`);
@@ -16,7 +16,7 @@ function parseMac(mac: string): Buffer {
   return Buffer.from(bytes);
 }
 
-function buildMagicPacket(mac: string): Buffer {
+export function buildMagicPacket(mac: string): Buffer {
   const macBuffer = parseMac(mac);
   const packet = Buffer.alloc(102);
 
@@ -45,6 +45,7 @@ export function sendMagicPacket(target: WolTarget): Promise<void> {
     socket.bind(() => {
       socket.setBroadcast(true);
       socket.send(packet, 0, packet.length, target.port, address, (err) => {
+        socket.removeAllListeners('error');
         socket.close();
         if (err) reject(err);
         else resolve();

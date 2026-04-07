@@ -34,7 +34,7 @@ function fetchLatestRelease(): Promise<GitHubRelease> {
   });
 }
 
-function compareVersions(current: string, latest: string): boolean {
+export function compareVersions(current: string, latest: string): boolean {
   const cur = current.replace(/^v/, '').split('.').map(Number);
   const lat = latest.replace(/^v/, '').split('.').map(Number);
   for (let i = 0; i < 3; i++) {

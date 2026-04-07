@@ -1,5 +1,6 @@
 let hosts: Host[] = [];
 let editingId: string | null = null;
+let wakingIds = new Set<string>();
 
 const hostList = document.getElementById('host-list')!;
 const emptyState = document.getElementById('empty-state')!;
@@ -182,6 +183,8 @@ async function saveHost(): Promise<void> {
     useDirectIp: fieldDirectIp.checked,
   };
 
+  const previousHosts = [...hosts];
+
   if (editingId) {
     const idx = hosts.findIndex(h => h.id === editingId);
     if (idx >= 0) hosts[idx] = host;
@@ -189,7 +192,12 @@ async function saveHost(): Promise<void> {
     hosts.push(host);
   }
 
-  await window.api.saveHosts(hosts);
+  const result = await window.api.saveHosts(hosts);
+  if (!result.success) {
+    hosts = previousHosts;
+    return;
+  }
+
   renderHosts();
   closeModal();
 }
@@ -199,26 +207,44 @@ async function deleteHost(id: string): Promise<void> {
   if (!host) return;
   if (!confirm(`Delete "${host.name}"?`)) return;
 
+  const previousHosts = [...hosts];
   hosts = hosts.filter(h => h.id !== id);
-  await window.api.saveHosts(hosts);
+
+  const result = await window.api.saveHosts(hosts);
+  if (!result.success) {
+    hosts = previousHosts;
+    return;
+  }
+
   renderHosts();
 }
 
 async function wakeHost(id: string): Promise<void> {
+  if (wakingIds.has(id)) return;
+  wakingIds.add(id);
+
   const host = hosts.find(h => h.id === id);
-  if (!host) return;
+  if (!host) { wakingIds.delete(id); return; }
 
   const statusEl = document.getElementById(`status-${id}`);
-  if (!statusEl) return;
+  if (!statusEl) { wakingIds.delete(id); return; }
 
-  const result = await window.api.sendWol(host);
+  const wakeBtn = hostList.querySelector(`[data-wake="${id}"]`) as HTMLButtonElement | null;
+  if (wakeBtn) wakeBtn.disabled = true;
 
-  statusEl.className = 'host-status visible ' + (result.success ? 'success' : 'error');
-  statusEl.textContent = result.success ? 'Packet sent' : 'Failed';
+  try {
+    const result = await window.api.sendWol(host);
 
-  setTimeout(() => {
-    statusEl.classList.remove('visible');
-  }, 2000);
+    statusEl.className = 'host-status visible ' + (result.success ? 'success' : 'error');
+    statusEl.textContent = result.success ? 'Packet sent' : 'Failed';
+
+    setTimeout(() => {
+      statusEl.classList.remove('visible');
+    }, 2000);
+  } finally {
+    wakingIds.delete(id);
+    if (wakeBtn) wakeBtn.disabled = false;
+  }
 }
 
 // Event listeners

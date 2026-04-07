@@ -13,10 +13,15 @@ interface WolResult {
   error?: string;
 }
 
+interface SaveResult {
+  success: boolean;
+  error?: string;
+}
+
 interface Window {
   api: {
     loadHosts(): Promise<Host[]>;
-    saveHosts(hosts: Host[]): Promise<void>;
+    saveHosts(hosts: Host[]): Promise<SaveResult>;
     sendWol(host: Host): Promise<WolResult>;
   };
 }

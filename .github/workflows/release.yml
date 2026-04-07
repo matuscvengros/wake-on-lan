@@ -9,6 +9,9 @@ permissions:
 
 jobs:
   build-mac:
+    strategy:
+      matrix:
+        arch: [x64, arm64]
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,15 +20,33 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - run: npm test
       - run: npm run build
       - name: Package
-        run: npx electron-builder --mac --publish never
+        run: npx electron-builder --mac --${{ matrix.arch }} --publish never
+      - name: Rename artifacts
+        env:
+          TAG: ${{ github.ref_name }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          VERSION="${TAG#v}"
+          if [ "$ARCH" = "x64" ]; then
+            SUFFIX=""
+          else
+            SUFFIX="-${ARCH}"
+          fi
+          for f in release/*.dmg; do
+            mv "$f" "release/wake-on-lan-${VERSION}${SUFFIX}.dmg"
+          done
       - uses: actions/upload-artifact@v4
         with:
-          name: mac-artifacts
+          name: mac-${{ matrix.arch }}
           path: release/*.dmg
 
   build-windows:
+    strategy:
+      matrix:
+        arch: [x64, arm64]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,15 +55,34 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - run: npm test
       - run: npm run build
       - name: Package
-        run: npx electron-builder --win --publish never
+        run: npx electron-builder --win --${{ matrix.arch }} --publish never
+      - name: Rename artifacts
+        env:
+          TAG: ${{ github.ref_name }}
+          ARCH: ${{ matrix.arch }}
+        shell: bash
+        run: |
+          VERSION="${TAG#v}"
+          if [ "$ARCH" = "x64" ]; then
+            SUFFIX=""
+          else
+            SUFFIX="-${ARCH}"
+          fi
+          for f in release/*.exe; do
+            mv "$f" "release/wake-on-lan-${VERSION}${SUFFIX}.exe"
+          done
       - uses: actions/upload-artifact@v4
         with:
-          name: win-artifacts
+          name: win-${{ matrix.arch }}
           path: release/*.exe
 
   build-linux:
+    strategy:
+      matrix:
+        arch: [x64, arm64]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -51,12 +91,13 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - run: npm test
       - run: npm run build
       - name: Package
-        run: npx electron-builder --linux --publish never
+        run: npx electron-builder --linux --${{ matrix.arch }} --publish never
       - uses: actions/upload-artifact@v4
         with:
-          name: linux-artifacts
+          name: linux-${{ matrix.arch }}
           path: release/*.AppImage
 
   release:
@@ -67,6 +108,20 @@ jobs:
         with:
           path: artifacts
           merge-multiple: true
+
+      - name: Rename Linux artifacts
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          VERSION="${TAG#v}"
+          cd artifacts
+          for f in *.AppImage; do
+            if echo "$f" | grep -qi arm64; then
+              mv "$f" "wake-on-lan-${VERSION}-arm64.AppImage"
+            else
+              mv "$f" "wake-on-lan-${VERSION}.AppImage"
+            fi
+          done
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
