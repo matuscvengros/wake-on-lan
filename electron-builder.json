@@ -1,0 +1,14 @@
+{
+  "appId": "com.mcvengros.wake-on-lan",
+  "productName": "Wake-on-LAN",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "mac": {
+    "target": "dmg",
+    "category": "public.app-category.utilities"
+  }
+}
