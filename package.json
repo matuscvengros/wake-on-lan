@@ -1,14 +1,15 @@
 {
   "name": "wake-on-lan",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Wake-on-LAN desktop app",
   "main": "dist/main/main.js",
   "author": "Matus Cvengros",
   "license": "MIT",
   "scripts": {
-    "build": "tsc && cp src/renderer/index.html src/renderer/styles.css dist/renderer/",
+    "copy-assets": "node -e \"require('fs').copyFileSync('src/renderer/index.html','dist/renderer/index.html');require('fs').copyFileSync('src/renderer/styles.css','dist/renderer/styles.css')\"",
+    "build": "tsc && npm run copy-assets",
     "dev": "npm run build && electron .",
-    "package": "npm run build && electron-builder --mac"
+    "package": "npm run build && electron-builder"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

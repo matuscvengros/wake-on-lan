@@ -1,13 +1,14 @@
 import { app, BrowserWindow, nativeTheme } from 'electron';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc';
+import { checkForUpdates } from './updater';
 
 nativeTheme.themeSource = 'system';
 
 function createWindow(): void {
   const win = new BrowserWindow({
-    width: 600,
-    height: 500,
+    width: 680,
+    height: 820,
     minWidth: 400,
     minHeight: 300,
     title: 'Wake on LAN',
@@ -25,6 +26,7 @@ function createWindow(): void {
 app.whenReady().then(() => {
   registerIpcHandlers();
   createWindow();
+  checkForUpdates();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
