@@ -4,7 +4,7 @@
 [![Release](https://github.com/matuscvengros/wake-on-lan/actions/workflows/release.yml/badge.svg)](https://github.com/matuscvengros/wake-on-lan/actions/workflows/release.yml)
 [![Electron](https://img.shields.io/badge/Electron-41-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A simple desktop app to wake computers on your network using [Wake-on-LAN](https://en.wikipedia.org/wiki/Wake-on-LAN) magic packets.
 
@@ -25,6 +25,8 @@ Download the latest release for your platform:
 | Linux (x64 & ARM64) | `.AppImage` |
 
 The app checks for updates on launch and will prompt you when a new version is available.
+
+> **macOS note:** The app is not code-signed. On first launch, macOS will block it. Go to **System Settings > Privacy & Security**, scroll down, and click **Open Anyway**. You only need to do this once.
 
 ## Usage
 
@@ -72,27 +74,33 @@ npm run dev
 | Command | Description |
 |---------|-------------|
 | `npm run dev` | Build and launch the app |
-| `npm run build` | Compile TypeScript only |
+| `npm run build` | Compile TypeScript and copy assets |
+| `npm test` | Run unit tests (vitest) |
 | `npm run package` | Build distributable for your current platform |
+| `npm run clean` | Remove `dist/`, `release/`, and `node_modules/` |
 
 ### Project structure
 
 ```
 src/
-├── main/           # Electron main process
-│   ├── main.ts     # Window lifecycle
-│   ├── ipc.ts      # IPC handlers
-│   ├── hosts.ts    # hosts.json persistence
-│   ├── wol.ts      # Magic packet (UDP via dgram)
-│   └── updater.ts  # Version check against GitHub Releases
+├── main/              # Electron main process
+│   ├── main.ts        # Window lifecycle
+│   ├── ipc.ts         # IPC handlers
+│   ├── hosts.ts       # hosts.json persistence
+│   ├── validation.ts  # Input validation (MAC, IP, port, host)
+│   ├── wol.ts         # Magic packet (UDP via dgram)
+│   └── updater.ts     # Version check against GitHub Releases
 ├── preload/
-│   └── preload.ts  # contextBridge API
+│   └── preload.ts     # contextBridge API
 ├── renderer/
 │   ├── index.html
-│   ├── styles.css   # System theme (dark/light)
-│   └── renderer.ts  # UI logic
+│   ├── global.d.ts    # Window API type declarations
+│   ├── styles.css     # System theme (dark/light)
+│   └── renderer.ts    # UI logic
 └── shared/
-    └── types.ts     # Shared TypeScript interfaces
+    └── types.ts       # Shared TypeScript interfaces
+tests/                 # Unit tests (vitest)
+scripts/               # Build helper scripts
 ```
 
 ## License
