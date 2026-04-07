@@ -1,30 +1,3 @@
-export {};
-
-interface Host {
-  id: string;
-  name: string;
-  mac: string;
-  ip: string;
-  broadcastAddress: string;
-  port: number;
-  useDirectIp: boolean;
-}
-
-interface WolResult {
-  success: boolean;
-  error?: string;
-}
-
-declare global {
-  interface Window {
-    api: {
-      loadHosts(): Promise<Host[]>;
-      saveHosts(hosts: Host[]): Promise<void>;
-      sendWol(host: Host): Promise<WolResult>;
-    };
-  }
-}
-
 let hosts: Host[] = [];
 let editingId: string | null = null;
 
@@ -34,7 +7,6 @@ const modalOverlay = document.getElementById('modal-overlay')!;
 const modalTitle = document.getElementById('modal-title')!;
 const hostForm = document.getElementById('host-form') as HTMLFormElement;
 const btnAdd = document.getElementById('btn-add')!;
-const btnAddEmpty = document.getElementById('btn-add-empty')!;
 const btnCancel = document.getElementById('btn-cancel')!;
 
 const fieldName = document.getElementById('field-name') as HTMLInputElement;
@@ -251,7 +223,6 @@ async function wakeHost(id: string): Promise<void> {
 
 // Event listeners
 btnAdd.addEventListener('click', () => openModal());
-btnAddEmpty.addEventListener('click', () => openModal());
 btnCancel.addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', (e) => {
   if (e.target === modalOverlay) closeModal();

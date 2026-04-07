@@ -41,7 +41,6 @@ body {
   background: var(--bg);
   color: var(--text);
   user-select: none;
-  -webkit-app-region: drag;
 }
 
 header {

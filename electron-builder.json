@@ -1,6 +1,6 @@
 {
   "appId": "com.mcvengros.wake-on-lan",
-  "productName": "Wake-on-LAN",
+  "productName": "Wake on LAN",
   "directories": {
     "output": "release"
   },

@@ -4,3 +4,4 @@ release/
 .superpowers/
 *.dmg
 docs/
+hosts.json

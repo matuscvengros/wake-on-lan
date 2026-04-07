@@ -10,7 +10,7 @@ function createWindow(): void {
     height: 500,
     minWidth: 400,
     minHeight: 300,
-    title: 'Wake-on-LAN',
+    title: 'Wake on LAN',
     webPreferences: {
       preload: path.join(__dirname, '..', 'preload', 'preload.js'),
       contextIsolation: true,
