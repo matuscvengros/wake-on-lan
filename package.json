@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "copy-assets": "node -e \"require('fs').copyFileSync('src/renderer/index.html','dist/renderer/index.html');require('fs').copyFileSync('src/renderer/styles.css','dist/renderer/styles.css')\"",
+    "clean": "node -e \"const fs=require('fs');['dist','release','node_modules'].forEach(d=>{fs.rmSync(d,{recursive:true,force:true})})\"",
     "build": "tsc && npm run copy-assets",
     "dev": "npm run build && electron .",
     "package": "npm run build && electron-builder"
