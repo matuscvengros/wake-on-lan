@@ -1,6 +1,6 @@
 {
   "name": "wake-on-lan",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Wake on LAN Desktop App",
   "main": "dist/main/main.js",
   "author": "Matus Cvengros",
@@ -11,6 +11,8 @@
     "build": "tsc && npm run copy-assets",
     "dev": "npm run build && electron .",
     "package": "npm run build && electron-builder",
+    "package:mac:arm64": "npm run build && electron-builder --mac --arm64",
+    "package:mac:x64": "npm run build && electron-builder --mac --x64",
     "test": "vitest run"
   },
   "devDependencies": {

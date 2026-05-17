@@ -20,7 +20,8 @@ Download the latest release for your platform:
 
 | Platform | File |
 |----------|------|
-| macOS (Apple Silicon & Intel) | `.dmg` |
+| macOS Apple Silicon | `wake-on-lan-*-arm64.dmg` |
+| macOS Intel | `wake-on-lan-*-x64.dmg` |
 | Windows (x64 & ARM64) | `.exe` |
 | Linux (x64 & ARM64) | `.AppImage` |
 
@@ -77,6 +78,8 @@ npm run dev
 | `npm run build` | Compile TypeScript and copy assets |
 | `npm test` | Run unit tests (vitest) |
 | `npm run package` | Build distributable for your current platform |
+| `npm run package:mac:arm64` | Build a native Apple Silicon macOS DMG |
+| `npm run package:mac:x64` | Build an Intel macOS DMG |
 | `npm run clean` | Remove `dist/`, `release/`, and `node_modules/` |
 
 ### Project structure

@@ -30,13 +30,8 @@ jobs:
           ARCH: ${{ matrix.arch }}
         run: |
           VERSION="${TAG#v}"
-          if [ "$ARCH" = "x64" ]; then
-            SUFFIX=""
-          else
-            SUFFIX="-${ARCH}"
-          fi
           for f in release/*.dmg; do
-            mv "$f" "release/wake-on-lan-${VERSION}${SUFFIX}.dmg"
+            mv "$f" "release/wake-on-lan-${VERSION}-${ARCH}.dmg"
           done
       - uses: actions/upload-artifact@v4
         with:
